@@ -1,0 +1,88 @@
+AIM : 
+perform data analysis in R and visualize the post analysis results using R graphic capabilites.
+
+DESCRIPTION Creating a graph using post data analysis and demonstrate how to create basic graph types including density plots, dat plots, bar charts exc.
+
+Cmd: Counts <- table (Arthritis & improved)
+
+Sun: table (....,exclude = if(useNA = = "no ) )
+
+DESCRIPTION Table uses the Cross-Chissifying factors to build a Contigency table of the factor levels Counts at Fach Combination of factor levels
+
+barplot (counts, main _ " Grouped Bar plot", Xlab="Treatment",ylab="Frequency",... besid= TRUE)
+
+SYNTAX barplot (height, ...)
+
+DESCRIPTION
+
+Create a bar plot with vertical or horizontal bars
+
+COMMAND
+Means <- aggregate (States$ illiteracy by = list (State(region) FUN - mean) 
+
+SYNTAX
+aggregate (x,...)
+
+DESCRIPTION Splits the data into Subsets, Computer Summary Statistics for each and returns the result in a Convenient form
+
+COMMAND
+
+Spine (Counts, main = " Spinogram Example")
+
+Spine (x,..)
+
+SYNTAX
+
+DESCRIPTION
+
+Spine puts are a special case of mosaic plots, and can be seen as a Generalization of standard bar plats.spinograms are an of  Stacked bar plats extension of
+histograms
+
+COMMAND
+
+plat (wit, mpg, main= "Basic scatterplot of Mpg vs weight" x lab = " car weight (lbs/1000)"," ylab= "Car Miles par Gallon",pch=la)
+
+SCatterplot (data, Select = NULL, "type = [ ("Jitter" "size")
+
+DESCRIPTION
+
+This function produces a scatterplot Matriz
+
+COMMAND
+
+Scatter plot (mpg ~wtl [yl, main="scatter plat of mpg vs. weight by # cylinders" ,xlab = " weight of car (lbs/1000)' ylab = "Milles per gallon",id.method "identify", baxplots="xy")
+
+Scatter plot (data, select = NULL, type = c("jitter"" size")
+
+DESCRIPTION
+
+Scatterplot fonction produces a Scatterplot Matriz
+COMMAND
+Scatterplot matrix(~mpg + disp+drat twt, data=mtcars, Spread=FALSE main = "scatterplot matrix via car package")
+
+SYNTAX
+Scattexplot Matrix(x,...)
+
+DESCRIPTION
+
+This function provides a convenient Interface to the pairs function to produce enhanced scatterplat Matriz, including unvariated displays
+
+COMMAND
+
+Symbols (wt, mpg, Circle=r, inches =0:30, fg="write" ,bg= "light blue" ,Xlab - ' "weight of car (lbs/1000]")
+
+Symbols (x, y = NULL Circles, Square, rectangle, Stairs -)
+
+DESCRIPTION:
+
+This function draws Symbel on a plot specific aspects of the Symbols, such as relative size Can be Customized by additional parameters 
+COMMAND 
+corrgram (mtCars, order =TRUE, lower.panel = panel.shade, upper .panel =panel.pie ,Text.panel = pand.txt )
+
+SYNTAX 
+
+Corrgram (x, type=NULL, Order= FALSE_ ]
+
+DESCRIPTION.
+
+The Corrgram correlation nutriz function provides a graph:61 display called correlogram

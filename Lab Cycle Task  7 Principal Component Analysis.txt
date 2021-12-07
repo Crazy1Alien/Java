@@ -1,0 +1,247 @@
+#Task 1
+#======
+#This document explains PCA, clustering, LFDA and MDS related plotting using {ggplot2} and {ggfortify}.
+#Plotting PCA (Principal Component Analysis)
+#{ggfortify} let {ggplot2} know how to interpret PCA objects. After loading {ggfortify}, you can use ggplot2::autoplot function for stats::prcomp and stats::princomp objects.
+
+library(ggfortify)
+df <- iris[1:4]
+pca_res <- prcomp(df, scale. = TRUE)
+
+autoplot(pca_res)
+plot of chunk unnamed-chunk-1
+
+#PCA result should only contains numeric values. 
+#If you want to colorize by non-numeric values which original data has,
+# pass original data using data keyword and then specify column name by colour keyword. 
+#Use help(autoplot.prcomp) (or help(autoplot.*) for any other objects) to check available options.
+
+autoplot(pca_res, data = iris, colour = 'Species')
+plot of chunk unnamed-chunk-2
+
+Passing label = TRUE draws each data label using rownames
+
+autoplot(pca_res, data = iris, colour = 'Species', label = TRUE, label.size = 3)
+plot of chunk unnamed-chunk-3
+
+Passing shape = FALSE makes plot without points. In this case, label is turned on unless otherwise specified.
+
+autoplot(pca_res, data = iris, colour = 'Species', shape = FALSE, label.size = 3)
+plot of chunk unnamed-chunk-4
+
+Passing loadings = TRUE draws eigenvectors.
+
+autoplot(pca_res, data = iris, colour = 'Species', loadings = TRUE)
+plot of chunk unnamed-chunk-5
+
+#You can attach eigenvector labels and change some options.
+
+autoplot(pca_res, data = iris, colour = 'Species',
+         loadings = TRUE, loadings.colour = 'blue',
+         loadings.label = TRUE, loadings.label.size = 3)
+plot of chunk unnamed-chunk-6
+
+By default, each component are scaled as the same as standard biplot. You can disable the scaling by specifying scale = 0
+
+autoplot(pca_res, scale = 0)
+plot of chunk unnamed-chunk-7
+
+Plotting Factor Analysis
+{ggfortify} supports stats::factanal object as the same manner as PCAs. Available opitons are the same as PCAs.
+
+Important You must specify scores option when calling factanal to calcurate sores (default scores = NULL). Otherwise, plotting will fail.
+
+d.factanal <- factanal(state.x77, factors = 3, scores = 'regression')
+autoplot(d.factanal, data = state.x77, colour = 'Income')
+plot of chunk unnamed-chunk-8
+
+autoplot(d.factanal, label = TRUE, label.size = 3,
+         loadings = TRUE, loadings.label = TRUE, loadings.label.size  = 3)
+plot of chunk unnamed-chunk-8
+
+Plotting K-means
+{ggfortify} supports stats::kmeans class. You must explicitly pass original data to autoplot function via data keyword. Because kmeans object doesn't store original data. The result will be automatically colorized by categorized cluster.
+
+set.seed(1)
+autoplot(kmeans(USArrests, 3), data = USArrests)
+plot of chunk unnamed-chunk-9
+
+autoplot(kmeans(USArrests, 3), data = USArrests, label = TRUE, label.size = 3)
+plot of chunk unnamed-chunk-9
+
+Plotting cluster package
+{ggfortify} supports cluster::clara, cluster::fanny, cluster::pam as well as cluster::silhouette classes. Because these instances should contains original data in its property, there is no need to pass original data explicitly.
+
+library(cluster)
+autoplot(clara(iris[-5], 3))
+plot of chunk unnamed-chunk-10
+
+Specifying frame = TRUE in autoplot for stats::kmeans and cluster::* draws convex for each cluster.
+
+autoplot(fanny(iris[-5], 3), frame = TRUE)
+plot of chunk unnamed-chunk-11
+
+If you want probability ellipse, {ggplot2} 1.0.0 or later is required. Specify whatever supported in ggplot2::stat_ellipse's type keyword via frame.type option.
+
+autoplot(pam(iris[-5], 3), frame = TRUE, frame.type = 'norm')
+plot of chunk unnamed-chunk-12
+
+If you want a Silhouette plot, pass a Silhouette object to autoplot function.
+
+autoplot(silhouette(pam(iris[-5], 3L)))
+plot of chunk unnamed-chunk-13
+
+For more information on Silhouette plots and how they can be used, see base R example, scikit-learn example and original paper.
+
+Plotting Local Fisher Discriminant Analysis with {lfda} package
+{lfda} package supports a set of Local Fisher Discriminant Analysis methods. You can use autoplot to plot the analysis result as the same manner as PCA.
+
+library(lfda)
+
+# Local Fisher Discriminant Analysis (LFDA)
+model <- lfda(iris[-5], iris[, 5], r = 3, metric="plain")
+autoplot(model, data = iris, frame = TRUE, frame.colour = 'Species')
+plot of chunk unnamed-chunk-14
+
+# Semi-supervised Local Fisher Discriminant Analysis (SELF)
+model <- self(iris[-5], iris[, 5], beta = 0.1, r = 3, metric="plain")
+autoplot(model, data = iris, frame = TRUE, frame.colour = 'Species')
+plot of chunk unnamed-chunk-15
+
+Plotting Multidimensional Scaling
+Before Plotting
+Even though MDS functions returns matrix or list (not specific class), {ggfortify} can infer background class from list attribute and perform autoplot.
+
+NOTE Inference from matrix is not supported.
+
+NOTE {ggfortify} can plot stats::dist instance as heatmap.
+
+autoplot(eurodist)
+plot of chunk unnamed-chunk-16
+
+Plotting Classical (Metric) Multidimensional Scaling
+stats::cmdscale performs Classical MDS and returns point coodinates as matrix, thus you can not use autoplot in this case. However, either eig = TRUE, add = True or x.ret = True is specified, stats::cmdscale return list instead of matrix. In these cases, {ggfortify} can infer how to plot it via autoplot. Refer to help(cmdscale) to check what these options are.
+
+autoplot(cmdscale(eurodist, eig = TRUE))
+plot of chunk unnamed-chunk-17
+
+Specify label = TRUE to plot labels.
+
+autoplot(cmdscale(eurodist, eig = TRUE), label = TRUE, label.size = 3)
+plot of chunk unnamed-chunk-18
+
+Plotting Non-metric Multidimensional Scaling
+MASS::isoMDS and MASS::sammon perform Non-metric MDS and return list which contains point coordinates. Thus, autoplot can be used.
+
+NOTE On background, autoplot.matrix is called to plot MDS. See help(autoplot.matrix) to check available options.
+
+library(MASS)
+autoplot(isoMDS(eurodist), colour = 'orange', size = 4, shape = 3)
+## initial  value 7.505733 
+## final  value 7.505688 
+## converged
+plot of chunk unnamed-chunk-19
+
+
+Passing shape = FALSE makes plot without points. In this case, label is turned on unless otherwise specified.
+
+autoplot(sammon(eurodist), shape = FALSE, label.colour = 'blue', label.size = 3)
+## Initial stress        : 0.01705
+## stress after  10 iters: 0.00951, magic = 0.500
+## stress after  20 iters: 0.00941, magic = 0.500
+plot of chunk unnamed-chunk-20
+
+#Task 2
+#======
+#--------------------------------------------#
+# R in Action (2nd ed): Chapter 14           #
+# Principal components and factor analysis   #
+# requires package psych                     #
+# install.packages("psych")                  #
+#--------------------------------------------#
+
+par(ask=TRUE)
+set.seed(1234) # make results reproducible
+
+
+# Listing 14.1 - Principal components analysis of US Judge Ratings
+library(psych)
+pc <- principal(USJudgeRatings[,-1], nfactors=1)
+pc
+
+
+# Principal components analysis Harman23.cor data
+library(psych)
+fa.parallel(Harman23.cor$cov, n.obs=302, fa="pc", n.iter=100,
+            show.legend=FALSE, main="Scree plot with parallel analysis")
+
+# Listing 14.2 - Principal components analysis of body measurements
+library(psych)
+PC <- principal(Harman23.cor$cov, nfactors=2, rotate="none")
+PC
+
+# Listing 14.3 - Principal components analysis with varimax rotation
+rc <- principal(Harman23.cor$cov, nfactors=2, rotate="varimax")
+rc
+
+
+# Listing 14.4 - Obtaining componenet scores from raw data
+library(psych)
+pc <- principal(USJudgeRatings[,-1], nfactors=1, score=TRUE)
+head(pc$scores)
+cor(USJudgeRatings$CONT, pc$score)
+
+
+# Listing 14.5 - Obtaining principal component scoring coefficients
+library(psych)
+rc <- principal(Harman23.cor$cov, nfactors=2, rotate="varimax")
+round(unclass(rc$weights), 2)
+
+
+## Exploratory factor analysis of ability.cov data
+
+options(digits=2)
+library(psych)
+covariances <- ability.cov$cov
+# convert covariances to correlations
+correlations <- cov2cor(covariances)
+correlations
+
+# determine number of factors to extract
+fa.parallel(correlations, n.obs=112, fa="both", n.iter=100,
+            main="Scree plots with parallel analysis")
+
+
+# Listing 14.6 - Principal axis factoring without rotation
+fa <- fa(correlations, nfactors=2, rotate="none", fm="pa")
+fa
+
+
+# Listing 14.7 - Factor extraction with orthogonal rotation
+fa.varimax <- fa(correlations, nfactors=2, rotate="varimax", fm="pa")
+fa.varimax
+
+
+# Listing 14.8 - Factor extraction with oblique rotation
+fa.promax <- fa(correlations, nfactors=2, rotate="promax", fm="pa")
+fa.promax
+
+# calculate factor loading matrix
+fsm <- function(oblique) {
+  if (class(oblique)[2]=="fa" & is.null(oblique$Phi)) {
+    warning("Object doesn't look like oblique EFA")
+  } else {
+    P <- unclass(oblique$loading)
+    F <- P %*% oblique$Phi
+    colnames(F) <- c("PA1", "PA2")
+    return(F)
+  }
+}
+fsm(fa.promax)
+
+# plot factor solution
+factor.plot(fa.promax, labels=rownames(fa.promax$loadings))
+fa.diagram(fa.promax, simple=FALSE)
+
+# factor scores
+fa.promax$weights
